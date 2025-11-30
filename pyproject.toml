@@ -20,7 +20,7 @@ dependencies = [
     "pyspark[connect]>=4.0.0",
     "pyarrow>=18.0.0",
     "pandas>=2.0.0",
-    "altair>=5.0.0",
+    "altair>=5.0.0,<6.0.0",
 ]
 
 [project.urls]

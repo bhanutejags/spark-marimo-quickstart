@@ -48,7 +48,10 @@ def _():
         SparkSession.builder.remote(SPARK_CONNECT_URL).appName("nyc-taxi-features").getOrCreate()
     )
 
-    print(f"Connected to Spark: {spark.version}")
+    # Prove we're using Spark Connect (not local driver)
+    print(f"Spark version: {spark.version}")
+    print(f"Session type: {type(spark).__module__}.{type(spark).__name__}")
+    print(f"Using Spark Connect: {'connect' in type(spark).__module__}")
     return (spark,)
 
 
