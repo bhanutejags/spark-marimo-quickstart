@@ -251,23 +251,24 @@ def _(F, df_with_features):
 
 @app.cell
 def _(hourly_trips, mo):
-    mo.ui.altair_chart(
-        mo.ui.altair_chart.make_chart(hourly_trips)
-        .mark_bar()
-        .encode(x="pickup_hour:O", y="trips:Q")
-        .properties(title="Trips by Hour of Day", width=600)
-    )
-    return
+    import altair as alt
+
+    chart = alt.Chart(hourly_trips).mark_bar().encode(
+        x=alt.X("pickup_hour:O", title="Hour of Day"),
+        y=alt.Y("trips:Q", title="Number of Trips"),
+    ).properties(title="Trips by Hour of Day", width=600)
+    mo.ui.altair_chart(chart)
+    return (alt,)
 
 
 @app.cell
-def _(features_sample, mo):
-    mo.ui.altair_chart(
-        mo.ui.altair_chart.make_chart(features_sample.sample(500))
-        .mark_circle(opacity=0.5)
-        .encode(x="trip_distance:Q", y="fare_amount:Q", color="pickup_hour:O")
-        .properties(title="Fare vs Distance", width=600)
-    )
+def _(alt, features_sample, mo):
+    chart2 = alt.Chart(features_sample.sample(500)).mark_circle(opacity=0.5).encode(
+        x=alt.X("trip_distance:Q", title="Distance (miles)"),
+        y=alt.Y("fare_amount:Q", title="Fare ($)"),
+        color="pickup_hour:O",
+    ).properties(title="Fare vs Distance", width=600)
+    mo.ui.altair_chart(chart2)
     return
 
 
