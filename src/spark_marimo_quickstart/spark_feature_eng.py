@@ -12,7 +12,7 @@ Run with: marimo edit notebooks/spark_feature_eng.py
 
 import marimo
 
-__generated_with = "0.10.0"
+__generated_with = "0.18.1"
 app = marimo.App(width="medium")
 
 
@@ -49,20 +49,18 @@ def _():
     )
 
     print(f"Connected to Spark: {spark.version}")
-    return SPARK_CONNECT_URL, SparkSession, spark
+    return (spark,)
 
 
 @app.cell
 def _(mo):
-    mo.md(
-        """
-        ## Load NYC Taxi Data
+    mo.md("""
+    ## Load NYC Taxi Data
 
-        We're using the official NYC TLC trip record data (Parquet format).
-        Source: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
-        """
-    )
-    return ()
+    We're using the official NYC TLC trip record data (Parquet format).
+    Source: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+    """)
+    return
 
 
 @app.cell
@@ -77,7 +75,7 @@ def _(spark):
     raw_df = spark.read.parquet(DATA_PATH)
     print(f"Loaded {raw_df.count():,} trips")
     raw_df.printSchema()
-    return DATA_PATH, raw_df
+    return (raw_df,)
 
 
 @app.cell
@@ -92,23 +90,21 @@ def _(mo, raw_df):
 @app.cell
 def _(sample_df):
     sample_df
-    return ()
+    return
 
 
 @app.cell
 def _(mo):
-    mo.md(
-        """
-        ## ETL: Clean and Transform
+    mo.md("""
+    ## ETL: Clean and Transform
 
-        Common data quality issues in taxi data:
-        - Negative or zero fares
-        - Impossible trip distances
-        - Missing pickup/dropoff times
-        - Outlier passenger counts
-        """
-    )
-    return ()
+    Common data quality issues in taxi data:
+    - Negative or zero fares
+    - Impossible trip distances
+    - Missing pickup/dropoff times
+    - Outlier passenger counts
+    """)
+    return
 
 
 @app.cell
@@ -133,22 +129,20 @@ def _(raw_df):
     print(f"Original: {original_count:,} rows")
     print(f"Cleaned: {cleaned_count:,} rows")
     print(f"Removed: {removed_pct:.1f}%")
-    return F, cleaned_count, cleaned_df, original_count, removed_pct
+    return F, cleaned_df
 
 
 @app.cell
 def _(mo):
-    mo.md(
-        """
-        ## Feature Engineering
+    mo.md("""
+    ## Feature Engineering
 
-        Create ML-ready features from the trip data:
-        1. **Time features** - hour, day of week, is_weekend
-        2. **Trip features** - duration, speed, fare per mile
-        3. **Rolling features** - using window functions
-        """
-    )
-    return ()
+    Create ML-ready features from the trip data:
+    1. **Time features** - hour, day of week, is_weekend
+    2. **Trip features** - duration, speed, fare per mile
+    3. **Rolling features** - using window functions
+    """)
+    return
 
 
 @app.cell
@@ -232,13 +226,15 @@ def _(F, df_with_features):
     ]
 
     df_final = df_final.select(feature_cols)
-    return Window, df_final, feature_cols, hourly_window
+    return (df_final,)
 
 
 @app.cell
 def _(mo):
-    mo.md("## Visualizations")
-    return ()
+    mo.md("""
+    ## Visualizations
+    """)
+    return
 
 
 @app.cell
@@ -261,7 +257,7 @@ def _(hourly_trips, mo):
         .encode(x="pickup_hour:O", y="trips:Q")
         .properties(title="Trips by Hour of Day", width=600)
     )
-    return ()
+    return
 
 
 @app.cell
@@ -272,13 +268,15 @@ def _(features_sample, mo):
         .encode(x="trip_distance:Q", y="fare_amount:Q", color="pickup_hour:O")
         .properties(title="Fare vs Distance", width=600)
     )
-    return ()
+    return
 
 
 @app.cell
 def _(mo):
-    mo.md("### Engineered Features Preview")
-    return ()
+    mo.md("""
+    ### Engineered Features Preview
+    """)
+    return
 
 
 @app.cell
@@ -313,35 +311,33 @@ def _(F, df_final, mo):
         | Avg Duration | {stats["avg_duration_min"][0]:.1f} min |
         """
     )
-    return (stats,)
+    return
 
 
 @app.cell
 def _(mo):
-    mo.md(
-        """
-        ## Next Steps
+    mo.md("""
+    ## Next Steps
 
-        The feature DataFrame is ready for:
-        - **ML Training** - export to Parquet, use with Spark MLlib or sklearn
-        - **Further Analysis** - aggregations, visualizations
-        - **Production Pipeline** - same code runs on EMR/Databricks
+    The feature DataFrame is ready for:
+    - **ML Training** - export to Parquet, use with Spark MLlib or sklearn
+    - **Further Analysis** - aggregations, visualizations
+    - **Production Pipeline** - same code runs on EMR/Databricks
 
-        ```python
-        # Save features to Parquet
-        df_final.write.parquet("s3://your-bucket/features/taxi_features.parquet")
-        ```
-        """
-    )
-    return ()
+    ```python
+    # Save features to Parquet
+    df_final.write.parquet("s3://your-bucket/features/taxi_features.parquet")
+    ```
+    """)
+    return
 
 
 @app.cell
-def _(spark):
+def _():
     """Clean up Spark session."""
     # Uncomment to stop the session when done
     # spark.stop()
-    return ()
+    return
 
 
 if __name__ == "__main__":
