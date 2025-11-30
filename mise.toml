@@ -1,3 +1,44 @@
 [tools]
-python = "3.14"
 uv = "latest"
+python = "3.14"
+
+[settings]
+python.uv_venv_auto = true
+
+[env]
+_.python.venv = { path = ".venv", create = true, uv_create_args = ['--seed'] }
+UV_PROJECT_ENVIRONMENT = ".venv"
+UV_RESOLUTION = "highest"
+UV_LINK_MODE = "copy"
+
+[tasks.install]
+description = "Install dependencies using uv"
+run = "uv sync"
+
+[tasks.notebook]
+description = "Start marimo notebook editor"
+run = "uv run marimo edit src/spark_marimo_quickstart/spark_feature_eng.py"
+
+[tasks.up]
+description = "Start Spark Connect server"
+run = "docker compose up -d"
+
+[tasks.down]
+description = "Stop Spark Connect server"
+run = "docker compose down"
+
+[tasks.logs]
+description = "View Spark Connect logs"
+run = "docker compose logs -f"
+
+[tasks.lint]
+description = "Lint code with ruff"
+run = "uv run ruff check ."
+
+[tasks.fmt]
+description = "Format code with ruff"
+run = "uv run ruff format ."
+
+[tasks.check]
+description = "Run all checks"
+run = ["uv run ruff check .", "uv run ruff format --check ."]
