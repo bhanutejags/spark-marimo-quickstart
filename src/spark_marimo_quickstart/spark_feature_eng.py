@@ -237,6 +237,46 @@ def _(F, df_with_features):
 
 @app.cell
 def _(mo):
+    mo.md("## Visualizations")
+    return ()
+
+
+@app.cell
+def _(F, df_with_features):
+    """Trips by hour of day."""
+    hourly_trips = (
+        df_with_features.groupBy("pickup_hour")
+        .agg(F.count("*").alias("trips"))
+        .orderBy("pickup_hour")
+        .toPandas()
+    )
+    return (hourly_trips,)
+
+
+@app.cell
+def _(hourly_trips, mo):
+    mo.ui.altair_chart(
+        mo.ui.altair_chart.make_chart(hourly_trips)
+        .mark_bar()
+        .encode(x="pickup_hour:O", y="trips:Q")
+        .properties(title="Trips by Hour of Day", width=600)
+    )
+    return ()
+
+
+@app.cell
+def _(features_sample, mo):
+    mo.ui.altair_chart(
+        mo.ui.altair_chart.make_chart(features_sample.sample(500))
+        .mark_circle(opacity=0.5)
+        .encode(x="trip_distance:Q", y="fare_amount:Q", color="pickup_hour:O")
+        .properties(title="Fare vs Distance", width=600)
+    )
+    return ()
+
+
+@app.cell
+def _(mo):
     mo.md("### Engineered Features Preview")
     return ()
 
