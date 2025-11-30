@@ -1,0 +1,56 @@
+[project]
+name = "spark-marimo-quickstart"
+version = "0.1.0"
+description = "Local-first Spark development with marimo and Spark 4.0 Connect"
+readme = "README.md"
+requires-python = ">=3.14"
+license = { text = "MIT" }
+authors = [{ name = "Bhanu Teja Ganneni" }]
+keywords = ["spark", "marimo", "pyspark", "spark-connect", "notebooks"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Data Science",
+]
+
+dependencies = [
+    "marimo>=0.10.0",
+    "pyspark[connect]>=4.0.0",
+    "pyarrow>=18.0.0",
+    "pandas>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/bhanuteja/spark-marimo-quickstart"
+Repository = "https://github.com/bhanuteja/spark-marimo-quickstart"
+
+[build-system]
+requires = ["uv_build>=0.9.13,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8.0",
+    "pytest>=8.0.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "I",      # isort
+    "UP",     # pyupgrade
+    "NPY",    # NumPy-specific rules
+    "PD",     # pandas-vet
+    "AIR",    # Airflow
+    "PERF",   # Perflint (performance)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks/*.py" = ["E501"]  # Allow longer lines in notebooks

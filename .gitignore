@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# Data (downloaded datasets)
+data/*.csv
+data/*.parquet
+data/*.json
+!data/download.sh
+
+# Logs
+*.log
+
+# marimo session files
+notebooks/__marimo__/

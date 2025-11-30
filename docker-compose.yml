@@ -1,0 +1,22 @@
+services:
+  spark-connect:
+    image: apache/spark:4.0.0
+    ports:
+      - "15002:15002" # Spark Connect
+      - "4040:4040" # Spark UI
+    command: >
+      /opt/spark/sbin/start-connect-server.sh
+      --master local[*]
+      --packages org.apache.spark:spark-connect_2.13:4.0.0
+      --conf spark.jars.ivy=/tmp/.ivy2
+      --conf spark.ui.enabled=true
+      --conf spark.ui.port=4040
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+    volumes:
+      - ./data:/opt/spark/work-dir/data
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "15002"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
