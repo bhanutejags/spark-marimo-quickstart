@@ -30,4 +30,4 @@ data/*.json
 *.log
 
 # marimo session files
-notebooks/__marimo__/
+**/__marimo__/
