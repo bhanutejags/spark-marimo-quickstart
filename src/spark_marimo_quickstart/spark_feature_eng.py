@@ -17,7 +17,7 @@ app = marimo.App(width="medium")
 
 
 @app.cell
-def _():
+def introduction():
     import marimo as mo
 
     mo.md(
@@ -36,8 +36,7 @@ def _():
 
 
 @app.cell
-def _():
-    """Connect to Spark Connect server."""
+def connect_to_spark():
     from pyspark.sql import SparkSession
 
     # For local Docker: sc://localhost:15002
@@ -56,7 +55,7 @@ def _():
 
 
 @app.cell
-def _(mo):
+def load_data_header(mo):
     mo.md("""
     ## Load NYC Taxi Data
 
@@ -67,7 +66,7 @@ def _(mo):
 
 
 @app.cell
-def _(spark):
+def load_data(spark):
     """Load the taxi trip data."""
     # Local path (download with: ./data/download.sh)
     DATA_PATH = "/opt/spark/work-dir/data/yellow_tripdata_2024-01.parquet"
@@ -82,22 +81,22 @@ def _(spark):
 
 
 @app.cell
-def _(mo, raw_df):
+def raw_data_preview_header(mo, raw_df):
     """Preview the raw data."""
-    mo.md("### Raw Data Preview")
+    mo.md("### Raw Data Sample")
     # Convert sample to pandas for marimo display
     sample_df = raw_df.limit(1000).toPandas()
     return (sample_df,)
 
 
 @app.cell
-def _(sample_df):
+def raw_data_table(sample_df):
     sample_df
     return
 
 
 @app.cell
-def _(mo):
+def etl_header(mo):
     mo.md("""
     ## ETL: Clean and Transform
 
@@ -111,7 +110,7 @@ def _(mo):
 
 
 @app.cell
-def _(raw_df):
+def clean_data(raw_df):
     """Clean the data: remove invalid records."""
     from pyspark.sql import functions as F
 
@@ -136,7 +135,7 @@ def _(raw_df):
 
 
 @app.cell
-def _(mo):
+def feature_engineering_header(mo):
     mo.md("""
     ## Feature Engineering
 
@@ -149,7 +148,7 @@ def _(mo):
 
 
 @app.cell
-def _(F, cleaned_df):
+def engineer_time_features(F, cleaned_df):
     """Engineer time-based features."""
     df_with_time = cleaned_df.withColumns(
         {
@@ -168,7 +167,7 @@ def _(F, cleaned_df):
 
 
 @app.cell
-def _(F, df_with_time):
+def engineer_trip_features(F, df_with_time):
     """Engineer trip-based features."""
     df_with_features = df_with_time.withColumns(
         {
@@ -193,7 +192,7 @@ def _(F, df_with_time):
 
 
 @app.cell
-def _(F, df_with_features):
+def add_window_features(F, df_with_features):
     """Add window-based features: hourly aggregates."""
     from pyspark.sql.window import Window
 
@@ -233,16 +232,8 @@ def _(F, df_with_features):
 
 
 @app.cell
-def _(mo):
-    mo.md("""
-    ## Visualizations
-    """)
-    return
-
-
-@app.cell
-def _(F, df_with_features):
-    """Trips by hour of day."""
+def compute_hourly_trip_counts(F, df_with_features):
+    """Aggregate trips by hour of day for visualization."""
     hourly_trips = (
         df_with_features.groupBy("pickup_hour")
         .agg(F.count("*").alias("trips"))
@@ -253,30 +244,40 @@ def _(F, df_with_features):
 
 
 @app.cell
-def _(hourly_trips, mo):
+def visualize_hourly_trips(hourly_trips, mo):
     import altair as alt
 
-    chart = alt.Chart(hourly_trips).mark_bar().encode(
-        x=alt.X("pickup_hour:O", title="Hour of Day"),
-        y=alt.Y("trips:Q", title="Number of Trips"),
-    ).properties(title="Trips by Hour of Day", width=600)
+    chart = (
+        alt.Chart(hourly_trips)
+        .mark_bar()
+        .encode(
+            x=alt.X("pickup_hour:O", title="Hour of Day"),
+            y=alt.Y("trips:Q", title="Number of Trips"),
+        )
+        .properties(title="Trips by Hour of Day", width=600)
+    )
     mo.ui.altair_chart(chart)
     return (alt,)
 
 
 @app.cell
-def _(alt, features_sample, mo):
-    chart2 = alt.Chart(features_sample.sample(500)).mark_circle(opacity=0.5).encode(
-        x=alt.X("trip_distance:Q", title="Distance (miles)"),
-        y=alt.Y("fare_amount:Q", title="Fare ($)"),
-        color="pickup_hour:O",
-    ).properties(title="Fare vs Distance", width=600)
+def visualize_fare_vs_distance(alt, features_sample, mo):
+    chart2 = (
+        alt.Chart(features_sample.sample(500))
+        .mark_circle(opacity=0.5)
+        .encode(
+            x=alt.X("trip_distance:Q", title="Distance (miles)"),
+            y=alt.Y("fare_amount:Q", title="Fare ($)"),
+            color="pickup_hour:O",
+        )
+        .properties(title="Fare vs Distance", width=600)
+    )
     mo.ui.altair_chart(chart2)
     return
 
 
 @app.cell
-def _(mo):
+def features_preview_header(mo):
     mo.md("""
     ### Engineered Features Preview
     """)
@@ -284,15 +285,15 @@ def _(mo):
 
 
 @app.cell
-def _(df_final):
-    """Display the final feature set."""
+def features_table(df_final):
+    """Display sample of the final feature set."""
     features_sample = df_final.limit(1000).toPandas()
     features_sample
     return (features_sample,)
 
 
 @app.cell
-def _(F, df_final, mo):
+def summary_statistics(F, df_final, mo):
     """Summary statistics for engineered features."""
     stats = df_final.select(
         F.count("*").alias("total_trips"),
@@ -319,7 +320,7 @@ def _(F, df_final, mo):
 
 
 @app.cell
-def _(mo):
+def next_steps(mo):
     mo.md("""
     ## Next Steps
 
@@ -337,8 +338,8 @@ def _(mo):
 
 
 @app.cell
-def _():
-    """Clean up Spark session."""
+def spark_session_cleanup():
+    """Clean up Spark session when done."""
     # Uncomment to stop the session when done
     # spark.stop()
     return

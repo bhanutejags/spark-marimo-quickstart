@@ -1,6 +1,7 @@
 [tools]
 uv = "latest"
-python = "3.14"
+python = "3.13"
+prettier = "3.2.5"
 
 [settings]
 python.uv_venv_auto = true

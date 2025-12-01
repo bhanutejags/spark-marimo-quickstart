@@ -1,0 +1,23 @@
+
+# Ignore artifacts:
+build
+dist
+.venv
+.ruff_cache
+__pycache__
+*.pyc
+
+# Ignore data:
+data/
+
+# Ignore dotfiles that should not be formatted by prettier
+.env
+.gitignore
+.gitattributes
+.mise.toml
+uv.lock
+pyproject.toml
+docker-compose.yml
+
+# Ignore marimo-generated files
+src/spark_marimo_quickstart/__marimo__/

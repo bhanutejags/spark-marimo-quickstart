@@ -3,7 +3,7 @@ name = "spark-marimo-quickstart"
 version = "0.1.0"
 description = "Local-first Spark development with marimo and Spark 4.0 Connect"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.13,<3.14"
 license = { text = "MIT" }
 authors = [{ name = "Bhanu Teja Ganneni" }]
 keywords = ["spark", "marimo", "pyspark", "spark-connect", "notebooks"]
@@ -11,7 +11,7 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Data Science",
 ]
 
@@ -39,7 +39,7 @@ dev = [
 
 [tool.ruff]
 line-length = 100
-target-version = "py314"
+target-version = "py313"
 
 [tool.ruff.lint]
 select = [
