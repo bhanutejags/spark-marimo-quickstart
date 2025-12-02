@@ -9,7 +9,7 @@ Develop locally, execute on remote clusters. Same code, different endpoint.
 A practical example of the Spark Connect architecture:
 
 - **Thin client** - PySpark runs locally, no Spark runtime needed
-- **Remote execution** - Jobs run on Docker (local) or cloud clusters (EMR, Databricks)
+- **Remote execution** - Jobs run remotely via Spark Connect server
 - **Reactive notebooks** - marimo's `.py` files are git-friendly and reproducible
 
 ## Quick Start
@@ -94,17 +94,6 @@ spark = SparkSession.builder \
     .getOrCreate()
 ```
 
-### Remote Cluster (EMR, Databricks)
-
-Change the connection string to point to your cluster:
-
-```python
-spark = SparkSession.builder \
-    .remote("sc://your-cluster-endpoint:15002") \
-    .appName("my-app") \
-    .getOrCreate()
-```
-
 ### S3 Access
 
 The Docker setup uses anonymous credentials for the public NYC TLC bucket. For private buckets, configure AWS credentials:
@@ -134,24 +123,6 @@ uv run marimo edit notebooks/spark_feature_eng.py
 # Run tests
 uv run pytest
 ```
-
-## Troubleshooting
-
-### Connection refused
-
-Spark Connect takes ~30 seconds to start on first run (downloads packages). Check logs:
-
-```bash
-docker compose logs -f spark-connect
-```
-
-### S3 access denied
-
-The public bucket uses anonymous access. If you see permission errors, ensure the AnonymousAWSCredentialsProvider is configured in docker-compose.yml.
-
-### Out of memory
-
-For large datasets, increase Docker memory allocation or use a smaller data sample.
 
 ## Resources
 
