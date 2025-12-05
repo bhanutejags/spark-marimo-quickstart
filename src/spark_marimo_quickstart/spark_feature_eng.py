@@ -28,7 +28,7 @@ def introduction():
         - **Spark 4.0 Connect** - thin client, remote execution
         - **marimo** - reactive notebooks as pure Python
 
-        The same code works locally (Docker) or against a remote cluster (EMR, Databricks).
+        The same code works locally (Docker) or against any remote cluster.
         Just change the connection string!
         """
     )
@@ -50,7 +50,6 @@ def connect_to_spark():
     # Check which type of session we are using
     print(f"Spark version: {spark.version}")
     print(f"Session type: {type(spark).__module__}.{type(spark).__name__}")
-    print(f"Using Spark Connect: {'connect' in type(spark).__module__}")
     return (spark,)
 
 
