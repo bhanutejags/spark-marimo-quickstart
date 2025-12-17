@@ -1,3 +1,6 @@
+[plugins]
+mise-uv-interceptor = "https://github.com/bhanutejags/mise-uv-interceptor"
+
 [tools]
 uv = "latest"
 python = "3.13"
@@ -8,6 +11,7 @@ python.uv_venv_auto = true
 
 [env]
 _.python.venv = { path = ".venv", create = true, uv_create_args = ['--seed'] }
+_.mise-uv-interceptor = {}
 UV_PROJECT_ENVIRONMENT = ".venv"
 UV_RESOLUTION = "highest"
 UV_LINK_MODE = "copy"
